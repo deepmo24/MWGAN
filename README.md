@@ -8,7 +8,7 @@ We provide PyTorch implementation for "Multi-marginal Wasserstein GAN".
 
 ## Paper
 [Multi-marginal Wasserstein GAN]() \
-Jiezhang Cao<sup> *</sup>, Langyuan Mo<sup> *</sup>, Yifan Zhang, Kui Jia, Chunhua Shen, Mingkui Tan \
+Jiezhang Cao<sup> *</sup>, Langyuan Mo<sup> *</sup>, Yifan Zhang, Kui Jia, Chunhua Shen, Mingkui Tan<sup> *</sup> \
 Advances in Neural Information Processing Systems(NeurIPS), 2019
 
 
@@ -70,13 +70,15 @@ To train MWGAN on facial attribute translation task:
     python main.py --num_domains 5 --batch_size 16 \
         --data_root data/Celeba5domain/train --src_domain Black_Hair \
         --result_root results_celeba \
-        --lambda_cls_d 1 --lambda_cls_g 10 --lambda_reg 100 --lambda_idt 10
+        --lambda_cls 1 --lambda_info 20 --lambda_idt 10
 To train MWGAN on edge->celeba task:
 
     python main.py --num_domains 4 --batch_size 16 \
         --data_root data/Edge2Celeba/train --src_domain Edge \
         --result_root results_edge \
-        --lambda_cls_d 10 --lambda_cls_g 10 --lambda_reg 100 --cls_loss BCE
+        --lambda_cls 10 --lambda_info 10 --cls_loss BCE
+
+* if you don't have tensorboardX and tensorflow, please add `--use_tensorboard false`
 
 ### Testing
 
@@ -96,7 +98,7 @@ To test MWGAN on edge->celeba task:
 
 Download the pretrained models.
 
-* Link: [Dropbox]() or [BaiduNetdisk]()
+* Link: [Dropbox](https://www.dropbox.com/sh/vkjo9gh4nx8kk7b/AACwG-F0P30h2AL8GHw5OMaMa?dl=0) or [BaiduNetdisk](https://pan.baidu.com/s/1EL2BEzJyOf0e0MyREPFTwg)
 * For facial attribute translation: put the pretrained models in `./celeba_pretrained/models` directory
 * For edge->celeba: put the pretrained models in `./edge_pretrained/models` directory
 

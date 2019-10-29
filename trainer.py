@@ -70,7 +70,8 @@ class Trainer(object):
             self.Gs[i].load_state_dict(torch.load(G_i_path, map_location=lambda storage, loc: storage))
 
         D_path = os.path.join(self.opts.checkpoint_dir, '{}-D.ckpt'.format(resume_iters))
-        self.D.load_state_dict(torch.load(D_path, map_location=lambda storage, loc: storage))
+        if os.path.exists(D_path):
+            self.D.load_state_dict(torch.load(D_path, map_location=lambda storage, loc: storage))
 
 
     def reset_grad(self):
@@ -205,7 +206,7 @@ class Trainer(object):
             d_loss_reg = self.gradient_penalty(out_hat, x_hat, self.opts.Lf)
 
             # total loss for update discriminator
-            d_loss = -1 * d_loss_adv + self.opts.lambda_cls_d * d_loss_cls + self.opts.lambda_reg * d_loss_reg
+            d_loss = -1 * d_loss_adv + self.opts.lambda_cls * d_loss_cls + self.opts.lambda_reg * d_loss_reg
 
             self.reset_grad()
             d_loss.backward()
@@ -218,13 +219,13 @@ class Trainer(object):
             loss['D/loss_reg'] = d_loss_reg.item()
 
             # =================================================================================== #
-            #                               3. Train the generator                                #
+            #                               3. Train the generators                               #
             # =================================================================================== #
 
             if (i + 1) % self.opts.n_critic == 0:
                 embedding = self.E(x_src)
 
-                g_loss_cls = 0
+                g_loss_info = 0
                 g_loss_adv = 0
                 g_loss_idt = 0
 
@@ -237,15 +238,15 @@ class Trainer(object):
 
                     out_fake_i, out_cls_fake_i = self.D(x_fake_i)
 
-                    # classification loss (mutual information maximization)
-                    g_loss_cls_i = self.classification_loss(out_cls_fake_i[:, idx], label_pos, self.opts.cls_loss)
-                    g_loss_cls += g_loss_cls_i
+                    # mutual information maximization
+                    g_loss_info_i = F.binary_cross_entropy_with_logits(out_cls_fake_i[:, idx], label_pos)
+                    g_loss_info += g_loss_info_i
 
                     # adversarial loss
                     g_loss_adv -= torch.mean(out_fake_i) # opposed sign
 
                 # total loss for update generator
-                g_loss = g_loss_adv / (self.opts.num_domains - 1) + self.opts.lambda_cls_g * g_loss_cls + self.opts.lambda_idt * g_loss_idt
+                g_loss = g_loss_adv / (self.opts.num_domains - 1) + self.opts.lambda_info * g_loss_info + self.opts.lambda_idt * g_loss_idt
 
                 self.reset_grad()
                 g_loss.backward()
@@ -253,7 +254,7 @@ class Trainer(object):
 
                 # Logging.
                 loss['G/loss_adv'] = g_loss_adv.item()
-                loss['G/loss_cls'] = g_loss_cls.item()
+                loss['G/loss_cls'] = g_loss_info.item()
                 if self.opts.lambda_idt > 0:
                     loss['G/loss_idt'] = g_loss_idt.item()
 
