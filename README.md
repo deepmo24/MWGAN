@@ -7,7 +7,7 @@ We provide PyTorch implementation for "Multi-marginal Wasserstein GAN".
 <p align="center"><img width="95%" src="material/example.jpg" /></p>
 
 ## Paper
-[Multi-marginal Wasserstein GAN]() \
+[Multi-marginal Wasserstein GAN](https://arxiv.org/abs/1911.00888) \
 Jiezhang Cao<sup> *</sup>, Langyuan Mo<sup> *</sup>, Yifan Zhang, Kui Jia, Chunhua Shen, Mingkui Tan<sup> *</sup> \
 Advances in Neural Information Processing Systems(NeurIPS), 2019
 
@@ -125,7 +125,7 @@ or
 <br/>
 
 ## Citation
-If this work is useful for your research, please cite our [paper]():
+If this work is useful for your research, please cite our [paper](https://arxiv.org/abs/1911.00888):
 
     @InProceedings{cao2019mwgan,
     title = {Multi-marginal Wasserstein GAN},
