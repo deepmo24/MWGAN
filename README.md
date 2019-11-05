@@ -36,7 +36,7 @@ Advances in Neural Information Processing Systems(NeurIPS), 2019
         cd MWGAN
 
 2. Install pytorch and other dependencies.
-    * install dependencies in requirements.txt
+    * pip install -r requirements.txt
     * tensorboardX and tensorflow are optional for logging
 
 ### Data preparation
