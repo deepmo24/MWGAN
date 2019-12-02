@@ -47,10 +47,12 @@ Advances in Neural Information Processing Systems(NeurIPS), 2019
 
 2. Construct the facial attribute translation dataset (i.e. Black_Hair, Blond_Hair, Eyeglasses, Mustache, Pale_Skin).
         
-        python data_process.py --process celeba
+        python data_process.py --process celeba --source_attr Black_Hair
 
 3. Construct the edge -> celeba dataset (i.e. Edge, Black_Hair, Blond_Hair, Brown_Hair).
     * Organize data using folder structure described [here](material/data_structure.md).
+        * Get  Black_Hair, Blond_Hair data from **step 2**.
+
         * Get Brown_Hair data:
 
                 python data_process.py --process celeba \

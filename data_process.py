@@ -7,7 +7,7 @@ from skimage import feature,io
 from skimage import img_as_ubyte
 from tqdm import tqdm
 
-def divide_data_by_attributes(attr_path, source_dir, target_dir, selected_attrs):
+def divide_data_by_attributes(attr_path, source_dir, target_dir, selected_attrs, source_attr=None):
     """
     Divide the CelebA data to different domains according to their attributes.
     """
@@ -37,7 +37,16 @@ def divide_data_by_attributes(attr_path, source_dir, target_dir, selected_attrs)
         values = split[1:]
         for attr_name in selected_attrs:
             idx = attr2idx[attr_name]
-            if values[idx] == '1':
+            filter_flag = True
+            if source_attr and attr_name == source_attr:
+                # Filter some overlapped attributes for source domain.
+                idx_others = [attr2idx[attr] for attr in selected_attrs if attr != source_attr]
+                for o_idx in idx_others:
+                    if values[o_idx] == '1':
+                        filter_flag = False
+                        break
+
+            if values[idx] == '1' and filter_flag:
                 src_path = os.path.join(source_dir, filename)
                 # test and train
                 if (i + 1) < 2000:
@@ -64,7 +73,7 @@ def extract_edge(source_dir, target_dir, select_nums):
         img_path = img_list[i]
         img = io.imread(img_path, as_gray=True)
         # extracting method
-        edge = feature.canny(img, sigma=0.5)
+        edge = feature.canny(img, sigma=1.0)
         height = edge.shape[0]
         width = edge.shape[1]
 
@@ -87,12 +96,13 @@ if __name__ == '__main__':
     parser.add_argument('--source_dir', type=str, default='data/celeba/images')
     parser.add_argument('--target_dir', type=str, default='data/Celeba5domain')
     parser.add_argument('--selected_attrs', nargs='+', default=['Black_Hair', 'Blond_Hair', 'Eyeglasses', 'Mustache', 'Pale_Skin'])
+    parser.add_argument('--source_attr', type=str, default=None)
     parser.add_argument('--select_nums', type=int, default=10000)
     opts = parser.parse_args()
 
     if opts.process == 'celeba':
         print('Begin processing...')
-        divide_data_by_attributes(opts.attr_path, opts.source_dir, opts.target_dir, opts.selected_attrs)
+        divide_data_by_attributes(opts.attr_path, opts.source_dir, opts.target_dir, opts.selected_attrs, opts.source_attr)
     else:
         print('Begin processing...')
         for mode in ['train', 'test']:
