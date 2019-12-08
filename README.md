@@ -1,6 +1,8 @@
 # Multi-marginal Wasserstein GAN
 
-We provide PyTorch implementation for "Multi-marginal Wasserstein GAN". 
+We provide PyTorch implementation for "Multi-marginal Wasserstein GAN".  
+
+News: A web demo is provided to show the translation performance on website [DEMO](http://39.106.79.246/mwgandemo)!
 
 <!-- <br/> -->
 
